@@ -1,5 +1,6 @@
 # jwt-passport-mysql
-Building a Restful API implementating authentication using JsonWebToken with passport and MySQL 
+
+A Restful API implementating authentication using JsonWebToken with MySQL Sequelize-ORM
 
 ORM Database : Sequelize
 Authentication : Passport, JWT
