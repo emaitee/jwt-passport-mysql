@@ -1,7 +1,7 @@
 const express = require('express');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
-const _ = require('lodash');
+// const _ = require('lodash');
 
 var passport = require('passport');
 var passportJWT = require('passport-jwt');
@@ -67,7 +67,7 @@ User.sync()
   .then(() => console.log('User table created successfully'))
   .catch(err => console.log('oooh, did you enter wrong database credentials?'));
 
-// create some useful functions to work on the database
+// create some helper functions to work on the database
 const createUser = async ({ name, password }) => {
   return await User.create({ name, password });
 };
@@ -109,7 +109,8 @@ app.post('/login', async function(req, res, next) {
       res.status(401).json({ message: 'No such user found' });
     }
     if (user.password === password) {
-      // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
+      // from now on we'll identify the user by the id and the id is the 
+      // only personalized value that goes into our token
       var payload = { id: user.id };
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
       res.json({ msg: 'ok', token: token });
@@ -120,24 +121,9 @@ app.post('/login', async function(req, res, next) {
 });
 
 // protected route
-app.get('/secret', passport.authenticate('jwt', { session: false }), function(
-  req,
-  res
-) {
+app.get('/protected', passport.authenticate('jwt', { session: false }), function(req, res) {
   res.json('Success! You can now see this without a token');
 });
-
-//for debugging sake, get to see what the token looks loke
-app.get(
-  '/secretDebug',
-  function(req, res, next) {
-    console.log(req.get('Authorization'));
-    next();
-  },
-  function(req, res) {
-    res.json('debugging');
-  }
-);
 
 // start app
 app.listen(3000, function() {
