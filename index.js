@@ -1,22 +1,22 @@
 const express = require('express');
-var bodyParser = require('body-parser');
-var jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 // const _ = require('lodash');
 
-var passport = require('passport');
-var passportJWT = require('passport-jwt');
+const passport = require('passport');
+const passportJWT = require('passport-jwt');
 
-var ExtractJwt = passportJWT.ExtractJwt;
-var JwtStrategy = passportJWT.Strategy;
+let ExtractJwt = passportJWT.ExtractJwt;
+let JwtStrategy = passportJWT.Strategy;
 
-var jwtOptions = {};
+let jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = 'wowwow';
 
 // lets create our strategy for web token
-var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
+let strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
   console.log('payload received', jwt_payload);
-  var user = getUser({ id: jwt_payload.id });
+  let user = getUser({ id: jwt_payload.id });
 
   if (user) {
     next(null, user);
@@ -104,15 +104,15 @@ app.post('/register', function(req, res, next) {
 app.post('/login', async function(req, res, next) {
   const { name, password } = req.body;
   if (name && password) {
-    var user = await getUser({ name: name });
+    let user = await getUser({ name: name });
     if (!user) {
       res.status(401).json({ message: 'No such user found' });
     }
     if (user.password === password) {
       // from now on we'll identify the user by the id and the id is the 
       // only personalized value that goes into our token
-      var payload = { id: user.id };
-      var token = jwt.sign(payload, jwtOptions.secretOrKey);
+      let payload = { id: user.id };
+      let token = jwt.sign(payload, jwtOptions.secretOrKey);
       res.json({ msg: 'ok', token: token });
     } else {
       res.status(401).json({ msg: 'Password is incorrect' });
